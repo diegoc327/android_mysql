@@ -9,19 +9,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.diego.practica_android_mysql.Menu">
 
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Editando Lap"
-        android:id="@+id/textView" />
+        android:text="Nuevo Taller"
+        android:id="@+id/btnNuevo"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="146dp"
+        android:layout_alignEnd="@+id/btnConsulta"
+        android:layout_alignStart="@+id/btnConsulta" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Boton PC"
-        android:id="@+id/button"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="66dp"
-        android:layout_marginTop="48dp" />
+        android:text="Consultar talleres"
+        android:id="@+id/btnConsulta"
+        android:layout_below="@+id/btnNuevo"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
