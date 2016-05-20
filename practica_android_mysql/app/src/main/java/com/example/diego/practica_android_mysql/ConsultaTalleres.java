@@ -2,15 +2,15 @@ package com.example.diego.practica_android_mysql;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-
-import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -19,6 +19,10 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,51 +31,67 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class NuevoTaller extends AppCompatActivity implements View.OnClickListener{
-    private EditText etDescripcion, etHoras, etLugar;
-    private Button btnGuardar;
-    private DatePicker dtFI, dtFF;
+
+public class ConsultaTalleres extends AppCompatActivity implements View.OnClickListener {
+    private ListView lvDatos;
+    private ArrayList<String> alDatos;
+    private ArrayAdapter<String> aaDatos;
+    private Button btn;
+    public String textJ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nuevo_taller);
+        setContentView(R.layout.activity_consulta_talleres);
+        lvDatos = (ListView) findViewById(R.id.lvTalleres);
+        btn=(Button)findViewById(R.id.button);
+        btn.setOnClickListener(this);
 
-        etDescripcion = (EditText)findViewById(R.id.etDescripcion);
-        etHoras = (EditText)findViewById(R.id.etHoras);
-        etLugar = (EditText)findViewById(R.id.etLugar);
-        dtFI=(DatePicker)findViewById(R.id.dtFI);
-        dtFF=(DatePicker)findViewById(R.id.dtFF);
-        btnGuardar=(Button)findViewById(R.id.btnGuardar);
-        btnGuardar.setOnClickListener(this);
+
+
+
 
     }
 
     @Override
     public void onClick(View v) {
+        String descripcion = "";
+        String horas = "";
+        String lugar = "";
+        String fechai = "";
+        String fechaf = "";
 
-        String descripcion = etDescripcion.getText().toString();
-        String horas = String.valueOf(etHoras.getText().toString());
-        String lugar = etLugar.getText().toString();
-        String fechai = dtFI.getDayOfMonth()+"/"+dtFI.getMonth()+"/"+dtFI.getYear();
-        String fechaf = dtFF.getDayOfMonth()+"/"+dtFF.getMonth()+"/"+dtFF.getYear();
+
 
         hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf);
         objHilo.execute("http://192.168.0.5:8080/conoperaciones.php");
+        //Toast.makeText(ConsultaTalleres.this, textJ, Toast.LENGTH_LONG).show();
+        //System.out.println(textJ);
+
+
+
+
+
 
     }
 
     public class hiloDatos extends AsyncTask<String, Void, Void> {
         private InputStream datosEntrada;
-        private String text = "";
+        public String text = "";
         private String error = "";
-
+        private static final String TAG_DESCRIPCION = "descripcion";
+        private static final String TAG_ID = "id";
+        private static final String TAG_HORAS = "horas";
+        private static final String TAG_lUGAR = "lugar";
+        private static final String TAG_FECHA_I = "fechai";
+        private static final String TAG_FECHA_F = "fechaf";
+        JSONArray descripcion = null;
         private String Descripcion;
         private String Horas;
         private String Lugar;
         private String FI;
         private String FF;
         private long p;
-        private ProgressDialog dialog = new ProgressDialog(NuevoTaller.this);
+        private ProgressDialog dialog = new ProgressDialog(ConsultaTalleres.this);
 
         hiloDatos(String descripcion, String horas, String lugar,String fi,String ff){
             this.Descripcion=descripcion;
@@ -103,7 +123,7 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
                     pairs.add(new BasicNameValuePair("Lugar", Lugar));
                     pairs.add(new BasicNameValuePair("FechaI", FI));
                     pairs.add(new BasicNameValuePair("FechaF", FF));
-                    pairs.add(new BasicNameValuePair("opcion", "0"));
+                    pairs.add(new BasicNameValuePair("opcion", "1"));
                     HttpClient client = new DefaultHttpClient();
                     HttpPost post = new HttpPost(url1);
                     post.setEntity(new UrlEncodedFormEntity(pairs));
@@ -145,9 +165,42 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
                 dialog.dismiss();
             }
             text = text.trim();
-            Toast.makeText(NuevoTaller.this, "exito", Toast.LENGTH_LONG).show();
+            textJ=text;
+            JSONArray jsonArray;
+            //JSONObject jObject;
+            alDatos = new ArrayList<String>();
+
+            try {
+                jsonArray = new JSONArray(textJ);
+                //descripcion = jObject.getJSONArray(TAG_DESCRIPCION);
+                for(int i = 0; i < jsonArray.length(); i++){
+                    JSONObject c = jsonArray.getJSONObject(i);
+                    //Toast.makeText(ConsultaTalleres.this, Integer.toString(i), Toast.LENGTH_SHORT).show();
+
+                    // Storing each json item in variable
+                    String id = c.getString(TAG_ID);
+
+                    String descripcion = c.getString(TAG_DESCRIPCION);
+
+                    String d=id+"-"+descripcion;
+
+
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            //Toast.makeText(ConsultaTalleres.this, text, Toast.LENGTH_LONG).show();
         }
+
+
 
     }
 
-}
+
+
+    }
+

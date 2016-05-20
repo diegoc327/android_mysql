@@ -19,15 +19,25 @@ public class Menu extends AppCompatActivity implements OnClickListener {
 
         btnNuevo = (Button) findViewById(R.id.btnNuevo);
         btnNuevo.setOnClickListener(this);
+        btnConsulta = (Button) findViewById(R.id.btnConsulta);
+        btnConsulta.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+
+        if (v.getId() == R.id.btnConsulta) {
+            Intent i = new Intent(this, ConsultaTalleres.class);
+            startActivity(i);
+
+
+        }
         if (v.getId() == R.id.btnNuevo) {
             Intent i = new Intent(this, NuevoTaller.class);
             startActivity(i);
 
 
         }
+
     }
 }
