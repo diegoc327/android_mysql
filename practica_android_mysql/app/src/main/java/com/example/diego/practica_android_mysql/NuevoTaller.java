@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -27,16 +28,19 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class NuevoTaller extends AppCompatActivity implements View.OnClickListener{
-
+    private EditText etDescripcion, etHoras, etLugar;
     private Button btnGuardar;
-    private DatePicker dpFi, dpFf;
+    private DatePicker dtFI, dtFF;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_taller);
 
-        dpFi=(DatePicker)findViewById(R.id.dtFI);
-        dpFf=(DatePicker)findViewById(R.id.dtFF);
+        etDescripcion = (EditText)findViewById(R.id.etDescripcion);
+        etHoras = (EditText)findViewById(R.id.etHoras);
+        etLugar = (EditText)findViewById(R.id.etLugar);
+        dtFI=(DatePicker)findViewById(R.id.dtFI);
+        dtFF=(DatePicker)findViewById(R.id.dtFF);
         btnGuardar=(Button)findViewById(R.id.btnGuardar);
         btnGuardar.setOnClickListener(this);
 
@@ -44,6 +48,15 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+
+        String descripcion = etDescripcion.getText().toString();
+        String horas = String.valueOf(etHoras.getText().toString());
+        String lugar = etLugar.getText().toString();
+        String fechai = dtFI.getDayOfMonth()+"/"+dtFI.getMonth()+"/"+dtFI.getYear();
+        String fechaf = dtFF.getDayOfMonth()+"/"+dtFF.getMonth()+"/"+dtFF.getYear();
+
+        hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf);
+        objHilo.execute("http://192.168.0.5:8080/conoperaciones.php");
 
     }
 
@@ -57,7 +70,7 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
         private String Lugar;
         private String FI;
         private String FF;
-
+        private long p;
         private ProgressDialog dialog = new ProgressDialog(NuevoTaller.this);
 
         hiloDatos(String descripcion, String horas, String lugar,String fi,String ff){
@@ -66,6 +79,7 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
             this.Lugar=lugar;
             this.FI=fi;
             this.FF=ff;
+            this.p=0;
         }
 
         @Override
@@ -94,9 +108,12 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
                     HttpPost post = new HttpPost(url1);
                     post.setEntity(new UrlEncodedFormEntity(pairs));
                     HttpResponse response = client.execute(post);
+                    p = response.getEntity().getContentLength();
+                    System.out.println(p);
+
                     datosEntrada = response.getEntity().getContent();
 
-                    //result = true;
+                    boolean result = true;
 
                 } catch (ClientProtocolException e) {
                     error += "\nClientProtocolException: " + e.getMessage();
