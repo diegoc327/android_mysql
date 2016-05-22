@@ -23,9 +23,16 @@ public class ModificarTalleres extends AppCompatActivity {
         btnActualizar= (Button)findViewById(R.id.btnActualizar);
         btnEliminar=(Button)findViewById(R.id.btnEliminar);
 
-        String[] dato = getIntent().getExtras().getString("Registro").split("-");
+        String[] dato = getIntent().getExtras().getString("Registro").split(":");
         System.out.println(dato.length);
-        System.out.println(dato.toString());
+        System.out.println(dato[0]);
+        System.out.println(dato[1]);
+        for (String s:dato
+             ) {
+
+            System.out.println(s+"fore");
+
+        }
         //etDescripcion.setText(dato[1]);
         //etHoras.setText(dato[2]);
         //etLugar.setText(dato[3]);

@@ -56,7 +56,7 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
         String fechaf = dtFF.getDayOfMonth()+"/"+dtFF.getMonth()+"/"+dtFF.getYear();
 
         hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf);
-        objHilo.execute("http://192.168.1.238:8080/conoperaciones.php");
+        objHilo.execute("http://192.168.1.191:8080/conoperaciones.php");
 
     }
 
@@ -84,8 +84,8 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Enviando datos...");
-            dialog.show();
+           // dialog.setMessage("Enviando datos...");
+            //dialog.show();
         }
 
         //Boolean result = false;
