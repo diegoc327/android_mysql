@@ -1,13 +1,16 @@
 package com.example.diego.practica_android_mysql;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -32,7 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 
-public class ConsultaTalleres extends AppCompatActivity implements View.OnClickListener {
+public class ConsultaTalleres extends AppCompatActivity  {
     private ListView lvDatos;
     private ArrayList<String> alDatos;
     private ArrayAdapter<String> aaDatos;
@@ -43,17 +46,7 @@ public class ConsultaTalleres extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consulta_talleres);
         lvDatos = (ListView) findViewById(R.id.lvTalleres);
-        btn=(Button)findViewById(R.id.button);
-        btn.setOnClickListener(this);
 
-
-
-
-
-    }
-
-    @Override
-    public void onClick(View v) {
         String descripcion = "";
         String horas = "";
         String lugar = "";
@@ -63,16 +56,27 @@ public class ConsultaTalleres extends AppCompatActivity implements View.OnClickL
 
 
         hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf);
-        objHilo.execute("http://192.168.0.5:8080/conoperaciones.php");
-        //Toast.makeText(ConsultaTalleres.this, textJ, Toast.LENGTH_LONG).show();
-        //System.out.println(textJ);
+        objHilo.execute("http://192.168.43.236:8080/conoperaciones.php");
+
+        lvDatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+                //Toast.makeText(getBaseContext(),"Adios",Toast.LENGTH_SHORT).show();
+                Intent objEditar = new Intent(getBaseContext(), ModificarTalleres.class);
+                objEditar.putExtra("Registro", ((TextView) arg1).getText());
+                startActivity(objEditar);
+
+                finish();
 
 
-
-
+            }
+        });
 
 
     }
+
+
+
 
     public class hiloDatos extends AsyncTask<String, Void, Void> {
         private InputStream datosEntrada;
@@ -105,7 +109,7 @@ public class ConsultaTalleres extends AppCompatActivity implements View.OnClickL
         @Override
         protected void onPreExecute() {
             dialog.setMessage("Enviando datos...");
-            dialog.show();
+//            dialog.show();
         }
 
         //Boolean result = false;
@@ -179,13 +183,24 @@ public class ConsultaTalleres extends AppCompatActivity implements View.OnClickL
 
                     // Storing each json item in variable
                     String id = c.getString(TAG_ID);
-
+                    String lugar = c.getString(TAG_lUGAR);
+                    String horas = c.getString(TAG_HORAS);
                     String descripcion = c.getString(TAG_DESCRIPCION);
+                    String fechai = c.getString(TAG_FECHA_I);
+                    String fechaf = c.getString(TAG_FECHA_F);
 
-                    String d=id+"-"+descripcion;
+                    String d=id+"-"+descripcion+"\nEn: "+lugar+"\nNumero de horas: "+horas+"\nFecha de Inicio: "+fechai+"\nFecha de culminacion"+fechaf;
+                    alDatos.add(d);
 
+                    //Intent objEditar = new Intent(getBaseContext(), .class);
+                    //objEditar.putExtra("Registro", ((TextView) arg1).getText());
 
                 }
+                aaDatos = new ArrayAdapter<String>
+                        (getBaseContext(), android.R.layout.simple_list_item_1, alDatos);
+                lvDatos.setAdapter(aaDatos);
+
+
 
 
             } catch (JSONException e) {
