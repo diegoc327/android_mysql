@@ -56,7 +56,7 @@ public class ConsultaTalleres extends AppCompatActivity  {
 
 
         hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf);
-        objHilo.execute("http://192.168.1.191:8080/conoperaciones.php");
+        objHilo.execute("http://192.168.43.236:8080/conoperaciones.php");
 
         lvDatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -189,7 +189,7 @@ public class ConsultaTalleres extends AppCompatActivity  {
                     String fechai = c.getString(TAG_FECHA_I);
                     String fechaf = c.getString(TAG_FECHA_F);
 
-                    String d=descripcion+"\nEn: "+lugar+"\nNumero de horas: "+horas+"\nFecha de Inicio: "+fechai+"\nFecha de culminacion:"+fechaf;
+                    String d=descripcion+"\nEn: "+lugar+"\nNumero de horas: "+horas+"\nFecha de Inicio :"+fechai+"\nFecha de culminacion :"+fechaf+"\nCodigo de curso: "+id;
                     alDatos.add(d);
 
                     //Intent objEditar = new Intent(getBaseContext(), .class);

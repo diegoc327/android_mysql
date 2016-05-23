@@ -1,6 +1,7 @@
 package com.example.diego.practica_android_mysql;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -52,11 +53,14 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
         String descripcion = etDescripcion.getText().toString();
         String horas = String.valueOf(etHoras.getText().toString());
         String lugar = etLugar.getText().toString();
-        String fechai = dtFI.getDayOfMonth()+"/"+dtFI.getMonth()+"/"+dtFI.getYear();
-        String fechaf = dtFF.getDayOfMonth()+"/"+dtFF.getMonth()+"/"+dtFF.getYear();
+        String fechai = dtFI.getDayOfMonth()+"/"+(dtFI.getMonth()+1)+"/"+dtFI.getYear();
+        String fechaf = dtFF.getDayOfMonth()+"/"+(dtFF.getMonth()+1)+"/"+dtFF.getYear();
 
         hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf);
-        objHilo.execute("http://192.168.1.191:8080/conoperaciones.php");
+        objHilo.execute("http://192.168.43.236:8080/conoperaciones.php");
+
+        Intent i = new Intent(this, ConsultaTalleres.class);
+        startActivity(i);
 
     }
 
@@ -145,7 +149,7 @@ public class NuevoTaller extends AppCompatActivity implements View.OnClickListen
                 dialog.dismiss();
             }
             text = text.trim();
-            Toast.makeText(NuevoTaller.this, "exito", Toast.LENGTH_LONG).show();
+            Toast.makeText(NuevoTaller.this, text, Toast.LENGTH_LONG).show();
         }
 
     }
