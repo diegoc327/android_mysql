@@ -1,6 +1,8 @@
 package com.example.diego.practica_android_mysql;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +33,7 @@ public class ModificarTalleres extends AppCompatActivity implements View.OnClick
     private EditText etDescripcion, etHoras, etLugar;
     private Button btnActualizar, btnEliminar;
     private DatePicker dtFI, dtFF;
-
+    public String[] dato;
     private String id;
 
     @Override
@@ -51,7 +53,7 @@ public class ModificarTalleres extends AppCompatActivity implements View.OnClick
         btnActualizar.setOnClickListener(this);
         btnEliminar.setOnClickListener(this);
 
-        String[] dato = getIntent().getExtras().getString("Registro").split("\n");
+        dato = getIntent().getExtras().getString("Registro").split("\n");
 
         //System.out.println(dato.length);
         etDescripcion.setText(dato[0]);
@@ -82,16 +84,49 @@ public class ModificarTalleres extends AppCompatActivity implements View.OnClick
         //System.out.println(id);
         if (v.getId() == R.id.btnActualizar) {
 
-            String opcion="2";
-            hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf,idC,opcion);
-            objHilo.execute("http://192.168.43.236:8080/conoperaciones.php");
+            AlertDialog.Builder dialogoE = new AlertDialog.Builder(ModificarTalleres.this);
 
-            Intent i = new Intent(this, ConsultaTalleres.class);
-            startActivity(i);
+            dialogoE.setIcon(android.R.drawable.ic_dialog_alert);
+            dialogoE.setTitle("Eliminar Alumno");
+            dialogoE.setMessage("¿Esta seguro de eliminar el registro?");
+            dialogoE.setCancelable(false);
+            dialogoE.setPositiveButton("Si", new DialogInterface.OnClickListener(){
+                public void onClick(DialogInterface dialog, int id) {
+                    String opcion="2";
+                    String descripcion = etDescripcion.getText().toString();
+                    String horas = String.valueOf(etHoras.getText().toString());
+                    String lugar = etLugar.getText().toString();
+                    String fechai = dtFI.getDayOfMonth()+"/"+(dtFI.getMonth()+1)+"/"+dtFI.getYear();
+                    String fechaf = dtFF.getDayOfMonth()+"/"+(dtFF.getMonth()+1)+"/"+dtFF.getYear();
+
+                    String id2 = dato[5].split(":")[1].trim();
+                    String idC=id2;
+
+                    hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf,idC,opcion);
+                    objHilo.execute("http://192.168.43.236:8080/conoperaciones.php");
+
+                    //int numero;
+                    //numero = Integer.parseInt(etControl.getText().toString());
+                    //conAlumno objAlumno = new conAlumno(getBaseContext());
+                    //objAlumno.eliminarAlumno(numero);
+                    Intent i = new Intent(getApplicationContext(), ConsultaTalleres.class);
+                    startActivity(i);
+                }
+            });
+
+
+
+
+
+
+
 
 
         }else{
             String opcion="3";
+
+
+
 
             hiloDatos objHilo = new hiloDatos(descripcion,horas,lugar,fechai,fechaf,idC,opcion);
             objHilo.execute("http://192.168.43.236:8080/conoperaciones.php");
